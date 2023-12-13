@@ -4,12 +4,15 @@ from pandasai import SmartDataframe
 from pandasai.llm import OpenAI
 import time
 import base64
-from config import api_token
+from dotenv import load_dotenv
+import os
 import matplotlib
 matplotlib.use('TkAgg')  # Set Matplotlib backend to "TkAgg"
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+load_dotenv()
+api_token = os.getenv("API_TOKEN")
+print(api_token)
 llm = OpenAI(api_token)
 st.title("Smart Analyst Chatbot 📊🤖📶")
 # Initialize st.session_state
