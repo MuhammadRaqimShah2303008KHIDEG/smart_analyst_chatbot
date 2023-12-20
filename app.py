@@ -37,10 +37,10 @@ if csv_file is not None:
                     end_time = time.time()
                     execution_time = end_time - start_time
                     # Check for different output types and handle accordingly
-                    if os.path.isfile('temp_chart.png'):
-                        output = plt.imread('temp_chart.png')
+                    if os.path.isfile('/mount/src/smart_analyst_chatbot/exports/charts/temp_chart.png'):
+                        output = plt.imread('/mount/src/smart_analyst_chatbot/exports/charts/temp_chart.png')
                         st.image(output)
-                        os.remove('temp_chart.png')
+                        os.remove('/mount/src/smart_analyst_chatbot/exports/charts/temp_chart.png')
                     else:
                         if isinstance(output, str):
                             st.write(output)  # Display text outputs
