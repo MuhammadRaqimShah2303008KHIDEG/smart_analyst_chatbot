@@ -6,11 +6,11 @@ import time
 import base64
 import os
 import matplotlib
-matplotlib.use('TkAgg')  # Set Matplotlib backend to "TkAgg"
+from PIL import Image
+# matplotlib.use('TkAgg')  # Set Matplotlib backend to "TkAgg"
 import matplotlib.pyplot as plt
 import seaborn as sns
-api_token = st.sidebar.text_input("Enter your API Key:")
-print(api_token)
+api_token = st.sidebar.text_input("Enter your API Key:", value="", type="password")
 llm = OpenAI(api_token)
 st.title("Smart Analyst Chatbot 📊🤖📶")
 # Initialize st.session_state
@@ -20,7 +20,7 @@ if "messages" not in st.session_state:
 
 # Sidebar for CSV upload and API keys
 st.sidebar.header("Configuration")
-csv_file = st.sidebar.file_uploader("Choose a CSV file 📄", type=["csv"])
+csv_file = st.sidebar.file_uploader("Choose a CSV file 📄", type=["csv", "xlsx", "xls"])
 
 if csv_file is not None:
     try:
@@ -36,19 +36,21 @@ if csv_file is not None:
                     output = df.chat(prompt)
                     end_time = time.time()
                     execution_time = end_time - start_time
-                    
                     # Check for different output types and handle accordingly
-                    if isinstance(output, str):
-                        st.write(output)  # Display text outputs
-                    elif isinstance(output, SmartDataframe):
-                        st.dataframe(output)  # Display DataFrame outputs
-                    elif isinstance(output, plt.Figure):  # Matplotlib plot
-                        # plt.figure(figsize=(8, 6))
-                        st.pyplot(output)
+                    if os.path.isfile('temp_chart.png'):
+                        output = plt.imread('temp_chart.png')
+                        st.image(output)
+                        os.remove('temp_chart.png')
                     else:
-                        st.write("Output type not recognized.")
-                    
-                    # Save question and answer to session state
+                        if isinstance(output, str):
+                            st.write(output)  # Display text outputs
+                        elif isinstance(output, SmartDataframe):
+                            st.dataframe(output)  # Display DataFrame outputs
+                        else:
+                            st.pyplot(output)
+                            st.write("Output type not recognized.")
+                        
+                        # Save question and answer to session state
                     st.session_state.messages.append({"prompt": prompt, "output": output})
                 st.write("Execution time:", execution_time, "seconds")
     except Exception as e:
